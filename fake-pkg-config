@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# this is a fake pkg-config since ffmpeg requires pkg-config if you want to
+# include external libraries like libfreetype or libass.  The Android NDK does
+# not provide any kind of pkg-config.
+
+#echo $* >> faketemp.txt
+ARCH="$FARCH"
+
+case $1 in
+    --exists)
+        if [ $3 = "librtmp" ]; then
+            exit 0
+	   elif [ $3 = "x264" ]; then
+	     exit 0
+       elif [ $3 = "fdk-aac" ]; then
+        exit 0
+       else
+            exit 1
+        fi
+        ;;
+    --cflags)
+	if [ $2 = "x264" ]; then
+        	echo "-I/Users/sks/git/x264-ios_160410/build/ios_$ARCH/include"
+	elif [ $2 = "librtmp" ]; then
+		echo "-I/Users/sks/git/rtmpdump-ios/build/ios_$ARCH/include"
+	elif [ $2 = "fdk-aac" ]; then
+        echo "-I/Users/sks/git/fdk-aac-ios-0.1.4/build/ios_$ARCH/include"
+    fi
+        ;;
+    --libs)
+	if [ $2 = "x264" ];then
+		echo "-L/Users/sks/git/x264-ios_160410/build/ios_$ARCH/lib -lx264"
+	elif [ $2 = "librtmp" ];then
+	       echo "-L/Users/sks/git/rtmpdump-ios/build/ios_$ARCH/lib -lrtmp"
+    elif [ $2 = "fdk-aac" ]; then
+        echo "-L/Users/sks/git/fdk-aac-ios-0.1.4/build/ios_$ARCH/lib -lfdk-aac"
+	fi
+        ;;
+    *)
+        echo "fake pkg-config for Android NDK build!"
+        ;;
+esac
